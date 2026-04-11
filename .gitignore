@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# MathCariola específico
+.env.local
+.env.*.local
+firebase-debug.log
+.firebase/

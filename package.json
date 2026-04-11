@@ -1,5 +1,5 @@
 {
-  "name": "mathcariola-temp",
+  "name": "mathcariola",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,17 +9,38 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@cortex-js/compute-engine": "^0.55.6",
+    "clsx": "^2.1.1",
+    "eslint-plugin-jsx-a11y": "^6.9.0",
+    "firebase": "^12.12.0",
+    "katex": "^0.16.45",
+    "mafs": "^0.21.0",
+    "mathbox": "^2.3.2-rc1",
+    "mathlive": "^0.109.1",
     "next": "16.2.3",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "react-hot-toast": "^2.6.0",
+    "tailwind-merge": "^3.5.0",
+    "three": "^0.183.2",
+    "zustand": "^5.0.12"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/jest": "^30.0.0",
+    "@types/katex": "^0.16.8",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/three": "^0.183.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.3",
+    "eslint-config-prettier": "^10.1.8",
+    "jest": "^30.3.0",
+    "jest-environment-jsdom": "^30.3.0",
+    "prettier": "^3.8.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
