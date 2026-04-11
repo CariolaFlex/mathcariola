@@ -1,5 +1,6 @@
 import { Sidebar } from '@/components/ui/Sidebar'
 import { Header } from '@/components/ui/Header'
+import { MathKeyboardConfig } from '@/components/math/MathKeyboardConfig'
 
 export default function ModulesLayout({
   children,
@@ -16,6 +17,12 @@ export default function ModulesLayout({
           {children}
         </main>
       </div>
+      {/*
+        MathKeyboardConfig se monta aquí (una sola vez para todos los módulos).
+        Configura el teclado virtual global de MathLive.
+        Renders null — efecto de configuración puro.
+      */}
+      <MathKeyboardConfig />
     </div>
   )
 }
