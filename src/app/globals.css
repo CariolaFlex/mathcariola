@@ -33,7 +33,22 @@
 
   /* Fuentes */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-inter-mono), ui-monospace, monospace;
+  --font-mono: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+
+  /* Breakpoints custom */
+  --breakpoint-xs: 375px;
+
+  /* Spacing matemático (para canvas de graficadoras) */
+  --spacing-canvas-sm: 300px;
+  --spacing-canvas-md: 400px;
+  --spacing-canvas-lg: 520px;
+
+  /* Border radius extendido */
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+
+  /* Sombras con color de acento */
+  --shadow-math: 0 4px 24px -4px rgb(99 102 241 / 0.15);
 }
 
 /* === VARIABLES DE COLOR POR TEMA === */
@@ -60,6 +75,7 @@
 /* === BASE === */
 html {
   scroll-behavior: smooth;
+  height: 100%;
 }
 
 body {
@@ -68,4 +84,35 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100%;
+}
+
+/* === UTILIDADES MATH === */
+
+/* Scrollbar estilizado (webkit) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Focus visible consistente */
+:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* Selección de texto con color primario */
+::selection {
+  background-color: rgb(99 102 241 / 0.2);
+  color: var(--text-primary);
 }
