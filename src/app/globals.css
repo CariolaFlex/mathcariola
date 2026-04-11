@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+/*
+ * mathlive/fonts.css incluye TODAS las fuentes KaTeX + MathLive.
+ * katex/dist/katex.min.css aporta los estilos de layout KaTeX.
+ * Se importan aquí (globals) para que estén disponibles en toda la app.
+ */
+@import "mathlive/fonts.css";
+@import "katex/dist/katex.min.css";
+
 /* Dark mode via class strategy — .dark en <html> */
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -60,6 +68,28 @@
   --text-secondary: #334155;
   --text-muted: #64748b;
   --border: #e2e8f0;
+
+  /* === CSS VARIABLES DE MATHLIVE (tema claro) ===
+     Referencia: https://cortexjs.io/mathlive/guides/customizing/ */
+  --math-field-background: #f8fafc;
+  --math-field-border: #e2e8f0;
+  --math-field-focus-ring: #6366f1;
+  --caret-color: #6366f1;
+  --selection-background-color: rgb(99 102 241 / 0.2);
+  --selection-color: #0f172a;
+  --smart-fence-color: #6366f1;
+  --contains-highlight-background-color: rgb(99 102 241 / 0.08);
+
+  /* Teclado virtual MathLive */
+  --keyboard-toolbar-background: #f1f5f9;
+  --keyboard-toolbar-text: #334155;
+  --keyboard-toolbar-text-active: #6366f1;
+  --keyboard-toolbar-rule: #e2e8f0;
+  --keyboard-background: #f8fafc;
+  --keyboard-text: #0f172a;
+  --keyboard-text-active: #ffffff;
+  --keyboard-background-active: #6366f1;
+  --keyboard-border: #e2e8f0;
 }
 
 .dark {
@@ -70,6 +100,27 @@
   --text-secondary: #cbd5e1;
   --text-muted: #94a3b8;
   --border: #334155;
+
+  /* === CSS VARIABLES DE MATHLIVE (tema oscuro) === */
+  --math-field-background: #1e293b;
+  --math-field-border: #334155;
+  --math-field-focus-ring: #818cf8;
+  --caret-color: #818cf8;
+  --selection-background-color: rgb(129 140 248 / 0.25);
+  --selection-color: #f1f5f9;
+  --smart-fence-color: #818cf8;
+  --contains-highlight-background-color: rgb(129 140 248 / 0.1);
+
+  /* Teclado virtual MathLive — dark */
+  --keyboard-toolbar-background: #293548;
+  --keyboard-toolbar-text: #cbd5e1;
+  --keyboard-toolbar-text-active: #818cf8;
+  --keyboard-toolbar-rule: #334155;
+  --keyboard-background: #1e293b;
+  --keyboard-text: #f1f5f9;
+  --keyboard-text-active: #ffffff;
+  --keyboard-background-active: #4f46e5;
+  --keyboard-border: #334155;
 }
 
 /* === BASE === */
