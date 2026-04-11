@@ -1,5 +1,8 @@
 import type { Metadata } from 'next'
-import { PageWrapper, Section } from '@/components/ui/PageWrapper'
+import { PageWrapper } from '@/components/ui/PageWrapper'
+import { MathInputPanel } from '@/components/math/MathInputPanel'
+import { MathDisplay } from '@/components/math/MathDisplay'
+import { Card } from '@/components/ui/Card'
 
 export const metadata: Metadata = { title: 'Funciones' }
 
@@ -8,17 +11,36 @@ export default function FuncionesPage() {
     <PageWrapper
       title="Funciones"
       description="Análisis y graficación de funciones reales."
-      badge="Sprint 2 →"
+      badge="Sprint 2 — MathLive + KaTeX"
     >
-      <Section title="En construcción">
-        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-[--border] bg-[--surface-raised] py-16 text-center">
-          <span className="mb-3 text-5xl">f(x)</span>
-          <p className="text-lg font-semibold text-[--text-primary]">Módulo Funciones</p>
-          <p className="mt-1 max-w-sm text-sm text-[--text-muted]">
-            La entrada matemática MathLive y el render KaTeX se integrarán en el Sprint 2.
-          </p>
-        </div>
-      </Section>
+      {/* Panel interactivo MathField → KaTeX */}
+      <Card padding="lg">
+        <MathInputPanel />
+      </Card>
+
+      {/* Demo de MathDisplay con ejemplos estáticos SSR */}
+      <Card padding="md">
+        <Card.Title>Ejemplos de render KaTeX (Server-side)</Card.Title>
+        <Card.Body>
+          <div className="mt-3 flex flex-col gap-3">
+            <MathDisplay
+              expression="f(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}"
+              step={1}
+              justification="Distribución normal"
+            />
+            <MathDisplay
+              expression="\nabla^2 \phi = \frac{\partial^2\phi}{\partial x^2} + \frac{\partial^2\phi}{\partial y^2} + \frac{\partial^2\phi}{\partial z^2}"
+              step={2}
+              justification="Operador Laplaciano"
+            />
+            <MathDisplay
+              expression="\oint_C \mathbf{F} \cdot d\mathbf{r} = \iint_S (\nabla \times \mathbf{F}) \cdot d\mathbf{S}"
+              step={3}
+              justification="Teorema de Stokes"
+            />
+          </div>
+        </Card.Body>
+      </Card>
     </PageWrapper>
   )
 }
