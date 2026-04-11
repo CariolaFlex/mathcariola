@@ -1,65 +1,146 @@
-import Image from "next/image";
+import Link from 'next/link'
+import type { Metadata } from 'next'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: 'MathCariola — Matemáticas para Ingeniería',
+}
+
+// ─── Types ───────────────────────────────────────────────────────────────────
+interface ModuleCard {
+  title: string
+  description: string
+  href: string
+  symbol: string
+  colorFrom: string
+  colorTo: string
+  topics: string[]
+}
+
+// ─── Data ─────────────────────────────────────────────────────────────────────
+const MODULES: ModuleCard[] = [
+  {
+    title: 'Funciones',
+    description: 'Análisis y graficación de funciones reales. Dominio, rango, transformaciones y composición.',
+    href: '/funciones',
+    symbol: 'f(x)',
+    colorFrom: 'from-indigo-500',
+    colorTo: 'to-violet-600',
+    topics: ['Graficadora 2D', 'Dominio & Rango', 'Composición', 'Inversas'],
+  },
+  {
+    title: 'Cálculo',
+    description: 'Límites, derivadas e integrales. Reglas de derivación y técnicas de integración.',
+    href: '/calculo',
+    symbol: '∫',
+    colorFrom: 'from-blue-500',
+    colorTo: 'to-cyan-600',
+    topics: ['Límites', 'Derivadas', 'Integrales', 'Series de Taylor'],
+  },
+  {
+    title: 'Álgebra Lineal',
+    description: 'Matrices, sistemas de ecuaciones, vectores y transformaciones lineales.',
+    href: '/algebra-lineal',
+    symbol: '[A]',
+    colorFrom: 'from-emerald-500',
+    colorTo: 'to-teal-600',
+    topics: ['Matrices', 'Determinantes', 'Eigenvalores', 'Espacios vectoriales'],
+  },
+  {
+    title: 'EDO',
+    description: 'Ecuaciones diferenciales ordinarias. Métodos analíticos y visualización de campos de pendientes.',
+    href: '/edo',
+    symbol: "y'",
+    colorFrom: 'from-orange-500',
+    colorTo: 'to-amber-600',
+    topics: ['EDO de 1er orden', 'EDO lineales', 'Laplace', 'Sistemas de EDO'],
+  },
+  {
+    title: 'Estadística',
+    description: 'Probabilidad, distribuciones y estadística descriptiva e inferencial para ingeniería.',
+    href: '/estadistica',
+    symbol: 'σ',
+    colorFrom: 'from-rose-500',
+    colorTo: 'to-pink-600',
+    topics: ['Distribuciones', 'Probabilidad', 'Pruebas de hipótesis', 'Regresión'],
+  },
+]
+
+// ─── Module Card ──────────────────────────────────────────────────────────────
+function ModuleCard({ mod }: { mod: ModuleCard }) {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <Link
+      href={mod.href}
+      className="group flex flex-col rounded-xl border border-[--border] bg-[--surface-raised] p-6 transition-all duration-200 hover:border-primary-400 hover:shadow-lg hover:shadow-primary-500/10 focus-visible:outline-2 focus-visible:outline-primary-500"
+    >
+      <div
+        className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br ${mod.colorFrom} ${mod.colorTo} text-sm font-bold text-white shadow-md`}
+      >
+        {mod.symbol}
+      </div>
+
+      <h2 className="mb-2 text-lg font-semibold text-[--text-primary] transition-colors group-hover:text-primary-600 dark:group-hover:text-primary-400">
+        {mod.title}
+      </h2>
+
+      <p className="mb-4 flex-1 text-sm leading-relaxed text-[--text-secondary]">
+        {mod.description}
+      </p>
+
+      <ul className="flex flex-wrap gap-1.5" aria-label={`Temas de ${mod.title}`}>
+        {mod.topics.map((topic) => (
+          <li
+            key={topic}
+            className="rounded-full bg-[--surface-overlay] px-2.5 py-0.5 text-xs text-[--text-muted]"
+          >
+            {topic}
+          </li>
+        ))}
+      </ul>
+    </Link>
+  )
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+export default function HomePage() {
+  return (
+    <div className="min-h-screen bg-[--surface]">
+      {/* Header simplificado para la home (sin sidebar) */}
+      <header className="flex h-14 items-center justify-between border-b border-[--border] px-4 md:px-8">
+        <div className="flex items-center gap-2 font-bold text-primary-600 dark:text-primary-400">
+          <span className="text-2xl leading-none">∑</span>
+          <span className="text-lg tracking-tight">MathCariola</span>
+        </div>
+        <ThemeToggle />
+      </header>
+
+      <main className="mx-auto max-w-5xl px-4 py-12 md:px-8">
+        {/* Hero */}
+        <section className="mb-12 text-center">
+          <h1 className="mb-4 text-4xl font-extrabold tracking-tight text-[--text-primary] md:text-5xl">
+            Matemáticas para{' '}
+            <span className="bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
+              Ingeniería
+            </span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mx-auto max-w-xl text-lg text-[--text-secondary]">
+            Resuelve, visualiza y aprende cálculo, álgebra lineal, EDO y estadística
+            con un motor CAS simbólico y graficadoras interactivas.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+        </section>
+
+        {/* Grid de módulos */}
+        <section aria-labelledby="modules-heading">
+          <h2 id="modules-heading" className="sr-only">
+            Módulos disponibles
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {MODULES.map((mod) => (
+              <ModuleCard key={mod.href} mod={mod} />
+            ))}
+          </div>
+        </section>
       </main>
     </div>
-  );
+  )
 }
