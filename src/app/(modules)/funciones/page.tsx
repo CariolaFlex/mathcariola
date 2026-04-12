@@ -3,6 +3,7 @@ import { PageWrapper } from '@/components/ui/PageWrapper'
 import { MathInputPanel } from '@/components/math/MathInputPanel'
 import { MathDisplay } from '@/components/math/MathDisplay'
 import { CASTestPanel } from '@/components/math/CASTestPanel'
+import { GraphPanel2D } from '@/components/graph/GraphPanel2D'
 import { Card } from '@/components/ui/Card'
 
 export const metadata: Metadata = { title: 'Funciones' }
@@ -12,8 +13,13 @@ export default function FuncionesPage() {
     <PageWrapper
       title="Funciones"
       description="Análisis y graficación de funciones reales."
-      badge="Sprint 3 — Cortex CAS"
+      badge="Sprint 4 — Graficadora 2D"
     >
+      {/* 2D Graph — main Sprint 4 feature */}
+      <Card padding="lg">
+        <GraphPanel2D height={420} />
+      </Card>
+
       {/* CAS Test Panel — dev only */}
       {process.env.NODE_ENV === 'development' && <CASTestPanel />}
 
