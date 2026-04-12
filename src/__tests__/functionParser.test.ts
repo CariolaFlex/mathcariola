@@ -125,19 +125,19 @@ describe('latexToFunction — discontinuity guard (1/x)', () => {
 
 describe('withDiscontinuityGuard', () => {
   it('converts Infinity to NaN', () => {
-    const raw = (_x: number) => Infinity
+    const raw = (x: number) => (void x, Infinity)
     const safe = withDiscontinuityGuard(raw)
     expect(isNaN(safe(0))).toBe(true)
   })
 
   it('converts -Infinity to NaN', () => {
-    const raw = (_x: number) => -Infinity
+    const raw = (x: number) => (void x, -Infinity)
     const safe = withDiscontinuityGuard(raw)
     expect(isNaN(safe(0))).toBe(true)
   })
 
   it('converts huge values (> 1e6) to NaN', () => {
-    const raw = (_x: number) => 2e7
+    const raw = (x: number) => (void x, 2e7)
     const safe = withDiscontinuityGuard(raw)
     expect(isNaN(safe(0))).toBe(true)
   })
@@ -150,7 +150,7 @@ describe('withDiscontinuityGuard', () => {
   })
 
   it('passes through NaN unchanged', () => {
-    const raw = (_x: number) => NaN
+    const raw = (x: number) => (void x, NaN)
     const safe = withDiscontinuityGuard(raw)
     expect(isNaN(safe(0))).toBe(true)
   })
