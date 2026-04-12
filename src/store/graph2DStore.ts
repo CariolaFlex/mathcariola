@@ -8,6 +8,8 @@ interface Graph2DState {
   functions: FunctionDefinition[]
   viewport: ViewportState
   options: Graph2DOptions
+  /** IDs of functions with derivative overlay active */
+  showDerivatives: string[]
   // Actions
   addFunction: (latex: string) => void
   removeFunction: (id: string) => void
@@ -16,6 +18,8 @@ interface Graph2DState {
   setViewport: (viewport: ViewportState) => void
   resetViewport: () => void
   toggleGrid: () => void
+  toggleAnalysis: () => void
+  toggleDerivative: (id: string) => void
 }
 
 export const useGraph2DStore = create<Graph2DState>()(
@@ -24,6 +28,7 @@ export const useGraph2DStore = create<Graph2DState>()(
       functions: [],
       viewport: DEFAULT_VIEWPORT,
       options: { showGrid: true, showAnalysis: false },
+      showDerivatives: [],
 
       addFunction: (latex: string) => {
         if (!latex.trim()) return
@@ -90,6 +95,18 @@ export const useGraph2DStore = create<Graph2DState>()(
       toggleGrid: () =>
         set((s) => ({
           options: { ...s.options, showGrid: !s.options.showGrid },
+        })),
+
+      toggleAnalysis: () =>
+        set((s) => ({
+          options: { ...s.options, showAnalysis: !s.options.showAnalysis },
+        })),
+
+      toggleDerivative: (id: string) =>
+        set((s) => ({
+          showDerivatives: s.showDerivatives.includes(id)
+            ? s.showDerivatives.filter((d) => d !== id)
+            : [...s.showDerivatives, id],
         })),
     }),
     {

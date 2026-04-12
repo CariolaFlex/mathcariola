@@ -55,6 +55,7 @@ export interface Graph2DProps {
   options: Graph2DOptions
   height?: number
   className?: string
+  showDerivatives?: string[]
 }
 
 // ---------------------------------------------------------------------------
@@ -67,25 +68,24 @@ export function Graph2D({
   options,
   height = 420,
   className,
+  showDerivatives = [],
 }: Graph2DProps) {
-  // Only pass visible functions to avoid unnecessary re-renders
-  const visibleFunctions = useMemo(
-    () => functions.filter((f) => f.visible && f.fn !== null),
-    [functions]
-  )
+  // Pass ALL functions so AnalysisOverlay and asymptotes work for hidden fns too
+  const allFunctions = useMemo(() => functions, [functions])
 
   return (
     <div
       className={className}
       style={{ height }}
       role="img"
-      aria-label={`Gráfica 2D con ${visibleFunctions.length} función(es)`}
+      aria-label={`Gráfica 2D con ${functions.filter((f) => f.visible).length} función(es)`}
     >
       <MafsCanvas
-        functions={visibleFunctions}
+        functions={allFunctions}
         viewport={viewport}
         options={options}
         height={height}
+        showDerivatives={showDerivatives}
       />
     </div>
   )

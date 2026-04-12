@@ -8,16 +8,27 @@
 
 import { Mafs, Coordinates, Plot, Point, Line } from 'mafs'
 import 'mafs/core.css'
+import { AnalysisOverlay } from './AnalysisOverlay'
 import type { FunctionDefinition, ViewportState, Graph2DOptions } from '@/types/graph'
+
+const CENTRAL_H = 1e-5
 
 export interface MafsCanvasProps {
   functions: FunctionDefinition[]
   viewport: ViewportState
   options: Graph2DOptions
   height: number
+  /** IDs of functions with derivative overlay active */
+  showDerivatives?: string[]
 }
 
-export function MafsCanvas({ functions, viewport, options, height }: MafsCanvasProps) {
+export function MafsCanvas({
+  functions,
+  viewport,
+  options,
+  height,
+  showDerivatives = [],
+}: MafsCanvasProps) {
   const { xMin, xMax, yMin, yMax } = viewport
 
   return (
@@ -76,6 +87,32 @@ export function MafsCanvas({ functions, viewport, options, height }: MafsCanvasP
               y={y0}
               color={def.color}
               opacity={0.8}
+            />
+          )
+        })}
+
+      {/* Analysis overlays (zeros, extrema) */}
+      {options.showAnalysis &&
+        functions.map((def) => (
+          <AnalysisOverlay key={`${def.id}-analysis`} def={def} viewport={viewport} />
+        ))}
+
+      {/* Derivative overlays — f'(x) via central difference */}
+      {functions
+        .filter((def) => def.visible && def.fn !== null && showDerivatives.includes(def.id))
+        .map((def) => {
+          const fn = def.fn!
+          const df = (x: number): number =>
+            (fn(x + CENTRAL_H) - fn(x - CENTRAL_H)) / (2 * CENTRAL_H)
+          return (
+            <Plot.OfX
+              key={`${def.id}-deriv`}
+              y={df}
+              color={def.color}
+              opacity={0.5}
+              minSamplingDepth={def.sampling.min}
+              maxSamplingDepth={def.sampling.max}
+              style="dashed"
             />
           )
         })}
