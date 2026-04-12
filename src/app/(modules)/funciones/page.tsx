@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { PageWrapper } from '@/components/ui/PageWrapper'
 import { MathInputPanel } from '@/components/math/MathInputPanel'
 import { MathDisplay } from '@/components/math/MathDisplay'
+import { CASTestPanel } from '@/components/math/CASTestPanel'
 import { Card } from '@/components/ui/Card'
 
 export const metadata: Metadata = { title: 'Funciones' }
@@ -11,8 +12,11 @@ export default function FuncionesPage() {
     <PageWrapper
       title="Funciones"
       description="Análisis y graficación de funciones reales."
-      badge="Sprint 2 — MathLive + KaTeX"
+      badge="Sprint 3 — Cortex CAS"
     >
+      {/* CAS Test Panel — dev only */}
+      {process.env.NODE_ENV === 'development' && <CASTestPanel />}
+
       {/* Panel interactivo MathField → KaTeX */}
       <Card padding="lg">
         <MathInputPanel />
