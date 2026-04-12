@@ -16,6 +16,7 @@ import { useCallback } from 'react'
 import { Graph2D } from './Graph2D'
 import { FunctionInputPanel } from './FunctionInputPanel'
 import { AnalysisPanel } from './AnalysisPanel'
+import { InequalityPlotter } from './InequalityPlotter'
 import { useGraph2DStore } from '@/store/graph2DStore'
 import { useFunctionAnalysis } from '@/hooks/useFunctionAnalysis'
 import { cn } from '@/lib/utils/cn'
@@ -53,6 +54,7 @@ export function GraphPanel2D({ className, height = 420 }: GraphPanel2DProps) {
     viewport,
     options,
     showDerivatives,
+    inequalities,
     resetViewport,
     toggleGrid,
     toggleAnalysis,
@@ -143,6 +145,14 @@ export function GraphPanel2D({ className, height = 420 }: GraphPanel2DProps) {
                 ))}
               </div>
             )}
+
+            {/* Inequality plotter */}
+            <div className="mt-4 border-t border-[--border] pt-4">
+              <p className="text-xs font-semibold text-[--text-secondary] uppercase tracking-wide mb-3">
+                Inecuaciones
+              </p>
+              <InequalityPlotter />
+            </div>
           </div>
         </aside>
 
@@ -155,6 +165,7 @@ export function GraphPanel2D({ className, height = 420 }: GraphPanel2DProps) {
             height={height}
             className="w-full"
             showDerivatives={showDerivatives}
+            inequalities={inequalities}
           />
         </div>
       </div>

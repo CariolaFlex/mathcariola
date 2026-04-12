@@ -23,7 +23,7 @@
 
 import { useMemo } from 'react'
 import dynamic from 'next/dynamic'
-import type { FunctionDefinition, ViewportState, Graph2DOptions } from '@/types/graph'
+import type { FunctionDefinition, ViewportState, Graph2DOptions, InequalityDefinition } from '@/types/graph'
 
 // ---------------------------------------------------------------------------
 // Dynamic import — all Mafs subcomponents loaded together client-side only
@@ -56,6 +56,7 @@ export interface Graph2DProps {
   height?: number
   className?: string
   showDerivatives?: string[]
+  inequalities?: InequalityDefinition[]
 }
 
 // ---------------------------------------------------------------------------
@@ -69,8 +70,8 @@ export function Graph2D({
   height = 420,
   className,
   showDerivatives = [],
+  inequalities = [],
 }: Graph2DProps) {
-  // Pass ALL functions so AnalysisOverlay and asymptotes work for hidden fns too
   const allFunctions = useMemo(() => functions, [functions])
 
   return (
@@ -86,6 +87,7 @@ export function Graph2D({
         options={options}
         height={height}
         showDerivatives={showDerivatives}
+        inequalities={inequalities}
       />
     </div>
   )

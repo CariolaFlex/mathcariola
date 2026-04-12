@@ -1,8 +1,12 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { FunctionDefinition, ViewportState, Graph2DOptions } from '@/types/graph'
+import type { FunctionDefinition, ViewportState, Graph2DOptions, InequalityDefinition } from '@/types/graph'
 import { DEFAULT_VIEWPORT, GRAPH_COLORS } from '@/types/graph'
 import { buildFunctionDefinition } from '@/lib/math/functionParser'
+import { latexToFunction } from '@/lib/math/functionParser'
+
+// Inequality colors — separate palette to avoid clashing with function colors
+const INEQ_COLORS = ['#e63946', '#457b9d', '#2a9d8f', '#e9c46a', '#f4a261', '#8b5cf6']
 
 interface Graph2DState {
   functions: FunctionDefinition[]
@@ -10,6 +14,8 @@ interface Graph2DState {
   options: Graph2DOptions
   /** IDs of functions with derivative overlay active */
   showDerivatives: string[]
+  /** Inequality regions for shading */
+  inequalities: InequalityDefinition[]
   // Actions
   addFunction: (latex: string) => void
   removeFunction: (id: string) => void
@@ -20,6 +26,8 @@ interface Graph2DState {
   toggleGrid: () => void
   toggleAnalysis: () => void
   toggleDerivative: (id: string) => void
+  addInequality: (upperLatex: string, lowerLatex: string) => void
+  removeInequality: (id: string) => void
 }
 
 export const useGraph2DStore = create<Graph2DState>()(
@@ -29,6 +37,7 @@ export const useGraph2DStore = create<Graph2DState>()(
       viewport: DEFAULT_VIEWPORT,
       options: { showGrid: true, showAnalysis: false },
       showDerivatives: [],
+      inequalities: [],
 
       addFunction: (latex: string) => {
         if (!latex.trim()) return
@@ -108,17 +117,38 @@ export const useGraph2DStore = create<Graph2DState>()(
             ? s.showDerivatives.filter((d) => d !== id)
             : [...s.showDerivatives, id],
         })),
+
+      addInequality: (upperLatex: string, lowerLatex: string) => {
+        const { inequalities } = get()
+        if (inequalities.length >= 6) return
+        const id = `ineq-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`
+        const color = INEQ_COLORS[inequalities.length % INEQ_COLORS.length]
+        const INF_FN = () => Infinity
+        const NEG_INF_FN = () => -Infinity
+        const ZERO_FN = () => 0
+        const upperFn =
+          upperLatex === '\\infty' ? INF_FN : (latexToFunction(upperLatex) ?? null)
+        const lowerFn =
+          lowerLatex === '-\\infty' ? NEG_INF_FN
+          : lowerLatex === '0' ? ZERO_FN
+          : (latexToFunction(lowerLatex) ?? null)
+        const def: InequalityDefinition = {
+          id, upperLatex, lowerLatex, color, visible: true, upperFn, lowerFn,
+        }
+        set((s) => ({ inequalities: [...s.inequalities, def] }))
+      },
+
+      removeInequality: (id: string) =>
+        set((s) => ({ inequalities: s.inequalities.filter((ineq) => ineq.id !== id) })),
     }),
     {
       name: 'graph2d-state',
       // Don't persist compiled fns — they can't be serialized
       partialize: (s) => ({
-        functions: s.functions.map((f) => ({
-          ...f,
-          fn: null, // exclude non-serializable compiled function
-        })),
+        functions: s.functions.map((f) => ({ ...f, fn: null })),
         viewport: s.viewport,
         options: s.options,
+        // inequalities + showDerivatives not persisted — re-added each session
       }),
       // Recompile functions when hydrating from localStorage
       onRehydrateStorage: () => (state) => {

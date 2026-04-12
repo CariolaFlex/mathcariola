@@ -9,7 +9,7 @@
 import { Mafs, Coordinates, Plot, Point, Line } from 'mafs'
 import 'mafs/core.css'
 import { AnalysisOverlay } from './AnalysisOverlay'
-import type { FunctionDefinition, ViewportState, Graph2DOptions } from '@/types/graph'
+import type { FunctionDefinition, ViewportState, Graph2DOptions, InequalityDefinition } from '@/types/graph'
 
 const CENTRAL_H = 1e-5
 
@@ -20,6 +20,8 @@ export interface MafsCanvasProps {
   height: number
   /** IDs of functions with derivative overlay active */
   showDerivatives?: string[]
+  /** Inequality regions to shade */
+  inequalities?: InequalityDefinition[]
 }
 
 export function MafsCanvas({
@@ -28,6 +30,7 @@ export function MafsCanvas({
   options,
   height,
   showDerivatives = [],
+  inequalities = [],
 }: MafsCanvasProps) {
   const { xMin, xMax, yMin, yMax } = viewport
 
@@ -95,6 +98,19 @@ export function MafsCanvas({
       {options.showAnalysis &&
         functions.map((def) => (
           <AnalysisOverlay key={`${def.id}-analysis`} def={def} viewport={viewport} />
+        ))}
+
+      {/* Inequality shading — Plot.Inequality: { "<": upperFn, ">": lowerFn } */}
+      {inequalities
+        .filter((ineq) => ineq.visible && ineq.upperFn !== null && ineq.lowerFn !== null)
+        .map((ineq) => (
+          <Plot.Inequality
+            key={ineq.id}
+            y={{ '<': ineq.upperFn!, '>': ineq.lowerFn! }}
+            color={ineq.color}
+            fillOpacity={0.25}
+            strokeOpacity={0.6}
+          />
         ))}
 
       {/* Derivative overlays — f'(x) via central difference */}
