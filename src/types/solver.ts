@@ -48,6 +48,9 @@ export type ProblemType =
   | 'factor'
   | 'unknown'
 
+// Alias used in solver operations
+export type SolverOperationCAS = 'simplify' | 'expand' | 'factor'
+
 /**
  * Input to the solver.
  */
