@@ -17,6 +17,7 @@ import { Graph2D } from './Graph2D'
 import { FunctionInputPanel } from './FunctionInputPanel'
 import { AnalysisPanel } from './AnalysisPanel'
 import { InequalityPlotter } from './InequalityPlotter'
+import { ParameterSliderPanel } from './ParameterSlider'
 import { useGraph2DStore } from '@/store/graph2DStore'
 import { useFunctionAnalysis } from '@/hooks/useFunctionAnalysis'
 import { cn } from '@/lib/utils/cn'
@@ -145,6 +146,11 @@ export function GraphPanel2D({ className, height = 420 }: GraphPanel2DProps) {
                 ))}
               </div>
             )}
+
+            {/* Parameter sliders — only shown when functions have parameters */}
+            <div className="mt-4 border-t border-[--border] pt-4">
+              <ParameterSliderPanel />
+            </div>
 
             {/* Inequality plotter */}
             <div className="mt-4 border-t border-[--border] pt-4">

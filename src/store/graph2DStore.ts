@@ -2,8 +2,8 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { FunctionDefinition, ViewportState, Graph2DOptions, InequalityDefinition } from '@/types/graph'
 import { DEFAULT_VIEWPORT, GRAPH_COLORS } from '@/types/graph'
-import { buildFunctionDefinition } from '@/lib/math/functionParser'
-import { latexToFunction } from '@/lib/math/functionParser'
+import { buildFunctionDefinition, latexToFunction } from '@/lib/math/functionParser'
+import { getComputeEngine } from '@/lib/math/computeEngine'
 
 // Inequality colors — separate palette to avoid clashing with function colors
 const INEQ_COLORS = ['#e63946', '#457b9d', '#2a9d8f', '#e9c46a', '#f4a261', '#8b5cf6']
@@ -16,10 +16,12 @@ interface Graph2DState {
   showDerivatives: string[]
   /** Inequality regions for shading */
   inequalities: InequalityDefinition[]
+  /** Parameter values per function id: { fnId: { a: 1, b: 2 } } */
+  parameters: Record<string, Record<string, number>>
   // Actions
   addFunction: (latex: string) => void
   removeFunction: (id: string) => void
-  updateFunction: (id: string, latex: string) => void
+  updateFunction: (id: string, latex: string, params?: Record<string, number>) => void
   toggleVisibility: (id: string) => void
   setViewport: (viewport: ViewportState) => void
   resetViewport: () => void
@@ -28,6 +30,7 @@ interface Graph2DState {
   toggleDerivative: (id: string) => void
   addInequality: (upperLatex: string, lowerLatex: string) => void
   removeInequality: (id: string) => void
+  setFunctionParams: (id: string, params: Record<string, number>) => void
 }
 
 export const useGraph2DStore = create<Graph2DState>()(
@@ -38,6 +41,7 @@ export const useGraph2DStore = create<Graph2DState>()(
       options: { showGrid: true, showAnalysis: false },
       showDerivatives: [],
       inequalities: [],
+      parameters: {},
 
       addFunction: (latex: string) => {
         if (!latex.trim()) return
@@ -71,7 +75,7 @@ export const useGraph2DStore = create<Graph2DState>()(
       removeFunction: (id: string) =>
         set((s) => ({ functions: s.functions.filter((f) => f.id !== id) })),
 
-      updateFunction: (id: string, latex: string) => {
+      updateFunction: (id: string, latex: string, params?: Record<string, number>) => {
         const { functions } = get()
         const existing = functions.find((f) => f.id === id)
         if (!existing) return
@@ -79,15 +83,37 @@ export const useGraph2DStore = create<Graph2DState>()(
         const colorIndex = GRAPH_COLORS.indexOf(
           existing.color as (typeof GRAPH_COLORS)[number]
         )
-        const def = buildFunctionDefinition(id, latex, colorIndex < 0 ? 0 : colorIndex)
+
+        // If params provided, substitute them into the expression before compiling
+        let compiledLatex = latex
+        if (params && Object.keys(params).length > 0) {
+          try {
+            const ce = getComputeEngine()
+            const expr = ce.parse(latex)
+            const subs: Record<string, ReturnType<typeof ce.number>> = {}
+            for (const [k, v] of Object.entries(params)) {
+              subs[k] = ce.number(v)
+            }
+            compiledLatex = expr.subs(subs).simplify().latex
+          } catch {
+            // fall through to compile original latex
+          }
+        }
+
+        const def = buildFunctionDefinition(id, compiledLatex, colorIndex < 0 ? 0 : colorIndex)
 
         set((s) => ({
           functions: s.functions.map((f) => {
             if (f.id !== id) return f
             if (!def) return { ...f, latex, fn: null }
-            return def
+            // Keep original latex (for display), use compiled def's fn
+            return { ...def, latex }
           }),
         }))
+      },
+
+      setFunctionParams: (id: string, params: Record<string, number>) => {
+        set((s) => ({ parameters: { ...s.parameters, [id]: params } }))
       },
 
       toggleVisibility: (id: string) =>
