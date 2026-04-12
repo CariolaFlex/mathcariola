@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "jest"
   },
   "dependencies": {
     "@cortex-js/compute-engine": "^0.55.6",
@@ -41,6 +42,7 @@
     "jest-environment-jsdom": "^30.3.0",
     "prettier": "^3.8.2",
     "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }
