@@ -79,14 +79,14 @@ function classify(latex: string): ProblemType {
 
     // Normalize: lhs - rhs
     const norm = lhs.add(rhs.neg()).simplify()
-    const json = norm.json as unknown
 
     // Check for quadratic: has x^2
     const normLatex = norm.latex
     if (/x\^2|x\^{2}/.test(normLatex)) return 'quadratic-equation'
 
-    // Check for linear: has x
-    if (/\bx\b/.test(normLatex)) return 'linear-equation'
+    // Check for linear: has x not surrounded by other letters
+    // Note: \b doesn't work before digits (2x has no boundary before x)
+    if (/(?<![a-zA-Z])x(?![a-zA-Z])/.test(normLatex)) return 'linear-equation'
 
     return 'unknown'
   } catch {
@@ -186,12 +186,7 @@ function solveLinear(
 
     // Step 2: move constant to RHS
     if (d !== 0) {
-      const newRhs = -d
-      const newRhsLatex = numLatex(newRhs)
-      const moveLatex =
-        d > 0
-          ? `${aStr}${variable} = ${rhsLatex} - ${numLatex(d)}`
-          : `${aStr}${variable} = ${rhsLatex} + ${numLatex(-d)}`
+      const newRhsLatex = numLatex(-d)
 
       steps.push(
         makeStep(
@@ -457,7 +452,7 @@ export function solveWithSteps(input: SolverInput): SolutionResult {
 
   if (!latex.trim()) {
     return {
-      steps: [],
+      steps: [makeStep(null, '', 'Ingresa una expresión para resolver', 'note')],
       finalAnswer: '',
       problemType: 'unknown',
       error: 'Expresión vacía',
