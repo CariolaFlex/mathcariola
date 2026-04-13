@@ -85,10 +85,14 @@ export function FuncionesModuleTabs() {
     const params = new URLSearchParams(window.location.search)
     const fns = params.getAll('fn')
     if (fns.length > 0 && fns[0]) {
-      setLoadedExpression(fns[0])
-      // Restore tab from URL
+      const expr = fns[0]
       const tab = params.get('tab')
-      if (tab && TABS.some((t) => t.id === tab)) setActiveTab(tab)
+      // Defer state updates out of the synchronous effect body
+      const id = setTimeout(() => {
+        setLoadedExpression(expr)
+        if (tab && TABS.some((t) => t.id === tab)) setActiveTab(tab)
+      }, 0)
+      return () => clearTimeout(id)
     }
   }, [])
 
