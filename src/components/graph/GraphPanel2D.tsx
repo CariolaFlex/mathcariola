@@ -12,7 +12,7 @@
  *   Desktop (≥ md): side-by-side — inputs (280px) | graph (flex-1)
  */
 
-import { useCallback } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { Graph2D } from './Graph2D'
 import { FunctionInputPanel } from './FunctionInputPanel'
 import { AnalysisPanel } from './AnalysisPanel'
@@ -47,9 +47,14 @@ export interface GraphPanel2DProps {
   className?: string
   /** Graph canvas height in pixels (default 420) */
   height?: number
+  /**
+   * Optional LaTeX expression to load as the first function on mount.
+   * Used when navigating from the Examples library or a shared URL.
+   */
+  initialExpression?: string
 }
 
-export function GraphPanel2D({ className, height = 420 }: GraphPanel2DProps) {
+export function GraphPanel2D({ className, height = 420, initialExpression }: GraphPanel2DProps) {
   const {
     functions,
     viewport,
@@ -60,7 +65,22 @@ export function GraphPanel2D({ className, height = 420 }: GraphPanel2DProps) {
     toggleGrid,
     toggleAnalysis,
     toggleDerivative,
+    addFunction,
+    updateFunction,
   } = useGraph2DStore()
+
+  // Seed initial expression once (from library or URL params)
+  const seededRef = useRef(false)
+  useEffect(() => {
+    if (!initialExpression || seededRef.current) return
+    seededRef.current = true
+    if (functions.length === 0) {
+      addFunction(initialExpression)
+    } else {
+      updateFunction(functions[0].id, initialExpression)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialExpression])
 
   const handleResetViewport = useCallback(() => resetViewport(), [resetViewport])
   const handleToggleGrid = useCallback(() => toggleGrid(), [toggleGrid])

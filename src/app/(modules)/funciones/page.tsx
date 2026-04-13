@@ -1,55 +1,24 @@
 import type { Metadata } from 'next'
 import { PageWrapper } from '@/components/ui/PageWrapper'
-import { MathInputPanel } from '@/components/math/MathInputPanel'
-import { MathDisplay } from '@/components/math/MathDisplay'
-import { CASTestPanel } from '@/components/math/CASTestPanel'
 import { FuncionesModuleTabs } from '@/components/graph/FuncionesModuleTabs'
 import { Card } from '@/components/ui/Card'
 
-export const metadata: Metadata = { title: 'Funciones' }
+export const metadata: Metadata = {
+  title: 'Funciones — MathCariola',
+  description:
+    'Módulo completo de funciones: graficadora 2D/3D, transformaciones, inversa, composición, biblioteca de ejemplos y solucionador paso a paso.',
+}
 
 export default function FuncionesPage() {
   return (
     <PageWrapper
       title="Funciones"
-      description="Análisis, graficación y resolución de funciones reales."
-      badge="Sprint 5 — Solucionador Paso a Paso"
+      description="Análisis, graficación, transformaciones, inversas, composición y solucionador."
+      badge="Sprint 8 — Módulo Completo"
     >
-      {/* Graficar | Resolver tabs — main Sprint 4+5 feature */}
+      {/* Main module — all tabs */}
       <Card padding="lg">
         <FuncionesModuleTabs />
-      </Card>
-
-      {/* CAS Test Panel — dev only */}
-      {process.env.NODE_ENV === 'development' && <CASTestPanel />}
-
-      {/* Panel interactivo MathField → KaTeX */}
-      <Card padding="lg">
-        <MathInputPanel />
-      </Card>
-
-      {/* Demo de MathDisplay con ejemplos estáticos SSR */}
-      <Card padding="md">
-        <Card.Title>Ejemplos de render KaTeX (Server-side)</Card.Title>
-        <Card.Body>
-          <div className="mt-3 flex flex-col gap-3">
-            <MathDisplay
-              expression="f(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}"
-              step={1}
-              justification="Distribución normal"
-            />
-            <MathDisplay
-              expression="\nabla^2 \phi = \frac{\partial^2\phi}{\partial x^2} + \frac{\partial^2\phi}{\partial y^2} + \frac{\partial^2\phi}{\partial z^2}"
-              step={2}
-              justification="Operador Laplaciano"
-            />
-            <MathDisplay
-              expression="\oint_C \mathbf{F} \cdot d\mathbf{r} = \iint_S (\nabla \times \mathbf{F}) \cdot d\mathbf{S}"
-              step={3}
-              justification="Teorema de Stokes"
-            />
-          </div>
-        </Card.Body>
       </Card>
     </PageWrapper>
   )
