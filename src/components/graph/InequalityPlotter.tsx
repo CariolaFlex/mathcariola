@@ -16,7 +16,6 @@
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import { useGraph2DStore } from '@/store/graph2DStore'
-import { cn } from '@/lib/utils/cn'
 
 // MathField is browser-only
 const MathField = dynamic(

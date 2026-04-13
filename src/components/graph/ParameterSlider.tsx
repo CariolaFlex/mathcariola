@@ -67,8 +67,6 @@ const DEFAULT_RANGE = { min: -5, max: 5, step: 0.05 }
 // ---------------------------------------------------------------------------
 
 interface ParameterSliderProps {
-  /** Function definition id — used to identify which function to recompile */
-  fnId: string
   /** Raw latex expression (may contain parameter symbols) */
   latex: string
   /** Current parameter values — controlled externally via store */
@@ -77,7 +75,6 @@ interface ParameterSliderProps {
 }
 
 export function ParameterSlider({
-  fnId,
   latex,
   params,
   onParamChange,
@@ -162,7 +159,6 @@ export function ParameterSliderPanel() {
             <span className="font-mono">f{i + 1}(x)</span>
           </div>
           <ParameterSlider
-            fnId={def.id}
             latex={def.latex}
             params={parameters[def.id] ?? {}}
             onParamChange={(p, v) => handleParamChange(def.id, def.latex, p, v)}

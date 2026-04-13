@@ -20,7 +20,6 @@ import type { CompiledFn } from '@/types/graph'
 
 const BISECT_TOL = 1e-9
 const BISECT_MAX_ITER = 52
-const DIVERGENCE_THRESHOLD = 1e6
 const DEDUP_ZEROS = 0.01
 const DEDUP_EXTREMA = 0.05
 const DEDUP_ASYMP = 0.02
@@ -139,7 +138,11 @@ export function findExtrema(
     const x = xMin + i * step
     const currDf = df(x)
 
-    if (isFinite(prevDf) && isFinite(currDf) && prevDf * currDf < 0) {
+    // Use sign-change detection allowing derivative to pass through zero exactly
+    const signChange = isFinite(prevDf) && isFinite(currDf) &&
+      (prevDf >= 0) !== (currDf >= 0)
+
+    if (signChange) {
       const xExt = bisect(df, prevX, x) ?? x
       const yVal = f(xExt)
       const curv = d2f(xExt)
@@ -187,7 +190,7 @@ export function findInflectionPoints(
     const x = xMin + i * step
     const currD2 = d2f(x)
 
-    if (isFinite(prevD2) && isFinite(currD2) && prevD2 * currD2 < 0) {
+    if (isFinite(prevD2) && isFinite(currD2) && (prevD2 >= 0) !== (currD2 >= 0)) {
       const xInfl = bisect(d2f, prevX, x) ?? x
       const yVal = f(xInfl)
       if (isFinite(yVal)) {
@@ -206,6 +209,10 @@ export function findInflectionPoints(
 // Vertical asymptotes
 // ---------------------------------------------------------------------------
 
+// Threshold used in refinement — lower than DIVERGENCE_THRESHOLD so we can
+// zoom in on asymptotes that only reach ~1000 between two adjacent samples
+const REFINE_THRESHOLD = 200
+
 function refineAsymptote(
   f: CompiledFn,
   a: number,
@@ -215,12 +222,12 @@ function refineAsymptote(
   if (depth === 0) return (a + b) / 2
   const mid = (a + b) / 2
   const ym = f(mid)
-  if (!isFinite(ym) || Math.abs(ym) > DIVERGENCE_THRESHOLD) return mid
+  if (!isFinite(ym) || Math.abs(ym) > REFINE_THRESHOLD) return mid
   const ya = f(a)
   const yb = f(b)
-  if (!isFinite(ya) || Math.abs(ya) > DIVERGENCE_THRESHOLD)
+  if (!isFinite(ya) || Math.abs(ya) > REFINE_THRESHOLD)
     return refineAsymptote(f, a, mid, depth - 1)
-  if (!isFinite(yb) || Math.abs(yb) > DIVERGENCE_THRESHOLD)
+  if (!isFinite(yb) || Math.abs(yb) > REFINE_THRESHOLD)
     return refineAsymptote(f, mid, b, depth - 1)
   return null
 }
@@ -246,7 +253,11 @@ export function findVerticalAsymptotes(
     const oneInfinite =
       (!isFinite(y1) && isFinite(y2)) || (isFinite(y1) && !isFinite(y2))
     const bothFinite = isFinite(y1) && isFinite(y2)
-    const hugeDiff = bothFinite && Math.abs(y2 - y1) > DIVERGENCE_THRESHOLD
+    // Relative check: diff > 50% of the larger absolute value — catches asymptotes
+    // even when neither sample hits Infinity (step skips over the pole)
+    const absDiff = bothFinite ? Math.abs(y2 - y1) : 0
+    const scale = bothFinite ? Math.max(Math.abs(y1), Math.abs(y2), 1) : 1
+    const hugeDiff = bothFinite && absDiff > 100 && absDiff / scale > 0.5
 
     if (oneInfinite || hugeDiff) {
       const xa = refineAsymptote(f, x1, x2)
