@@ -23,7 +23,7 @@
 
 import { useMemo } from 'react'
 import dynamic from 'next/dynamic'
-import type { FunctionDefinition, ViewportState, Graph2DOptions } from '@/types/graph'
+import type { FunctionDefinition, ViewportState, Graph2DOptions, InequalityDefinition } from '@/types/graph'
 
 // ---------------------------------------------------------------------------
 // Dynamic import — all Mafs subcomponents loaded together client-side only
@@ -55,6 +55,8 @@ export interface Graph2DProps {
   options: Graph2DOptions
   height?: number
   className?: string
+  showDerivatives?: string[]
+  inequalities?: InequalityDefinition[]
 }
 
 // ---------------------------------------------------------------------------
@@ -67,25 +69,25 @@ export function Graph2D({
   options,
   height = 420,
   className,
+  showDerivatives = [],
+  inequalities = [],
 }: Graph2DProps) {
-  // Only pass visible functions to avoid unnecessary re-renders
-  const visibleFunctions = useMemo(
-    () => functions.filter((f) => f.visible && f.fn !== null),
-    [functions]
-  )
+  const allFunctions = useMemo(() => functions, [functions])
 
   return (
     <div
       className={className}
       style={{ height }}
       role="img"
-      aria-label={`Gráfica 2D con ${visibleFunctions.length} función(es)`}
+      aria-label={`Gráfica 2D con ${functions.filter((f) => f.visible).length} función(es)`}
     >
       <MafsCanvas
-        functions={visibleFunctions}
+        functions={allFunctions}
         viewport={viewport}
         options={options}
         height={height}
+        showDerivatives={showDerivatives}
+        inequalities={inequalities}
       />
     </div>
   )

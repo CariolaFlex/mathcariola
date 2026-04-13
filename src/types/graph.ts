@@ -53,3 +53,40 @@ export const DEFAULT_VIEWPORT: ViewportState = {
   yMin: -7,
   yMax: 7,
 }
+
+// ---------------------------------------------------------------------------
+// Function analysis types
+// ---------------------------------------------------------------------------
+
+export interface Extremum {
+  x: number
+  y: number
+  /** 'max' = local maximum, 'min' = local minimum, 'inflection' = inflection point */
+  type: 'max' | 'min' | 'inflection'
+}
+
+export interface AnalysisResult {
+  zeros: number[]
+  extrema: Extremum[]
+  yIntercept: number | null
+  verticalAsymptotes: number[]
+  rangeMin: number
+  rangeMax: number
+}
+
+// ---------------------------------------------------------------------------
+// Inequality types
+// ---------------------------------------------------------------------------
+
+/** Rendered as Plot.Inequality — region between upper and lower functions */
+export interface InequalityDefinition {
+  id: string
+  /** LaTeX for the upper boundary (empty string = viewport top) */
+  upperLatex: string
+  /** LaTeX for the lower boundary (empty string = zero) */
+  lowerLatex: string
+  color: string
+  visible: boolean
+  upperFn: CompiledFn | null
+  lowerFn: CompiledFn | null
+}
