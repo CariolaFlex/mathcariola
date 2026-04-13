@@ -14,7 +14,7 @@
 
 import { useState, useCallback } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Grid, Environment } from '@react-three/drei'
+import { OrbitControls, Grid } from '@react-three/drei'
 import * as THREE from 'three'
 import { SurfaceMesh, ContourLines, ParametricCurve3D } from './SurfacePlotter'
 import type { Surface3DConfig, ViewMode3D, CameraPreset } from '@/types/graph3d'

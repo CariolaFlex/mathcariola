@@ -77,7 +77,10 @@ export function Graph3D() {
   const [webglReady, setWebglReady] = useState<boolean | null>(null) // null = checking
 
   useEffect(() => {
-    setWebglReady(detectWebGL())
+    const ready = detectWebGL()
+    // setTimeout defers state update out of the synchronous effect body
+    const id = setTimeout(() => setWebglReady(ready), 0)
+    return () => clearTimeout(id)
   }, [])
 
   if (webglReady === null) {
