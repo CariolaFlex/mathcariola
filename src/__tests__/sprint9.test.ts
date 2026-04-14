@@ -287,7 +287,7 @@ describe('compileTaylorPolynomial', () => {
 describe('Riemann performance', () => {
   it('100 subdivisions complete < 1000ms', () => {
     const fn = compileFunction1D('x^2')
-    expect(fn).not.toBeNull()
+    if (!fn) { expect(fn).not.toBeNull(); return }
 
     const start = Date.now()
     const n = 100

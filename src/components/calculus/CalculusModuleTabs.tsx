@@ -9,22 +9,56 @@
  *   limites      → LimitsPanel
  *   visualizador → TangentVisualizer + RiemannVisualizer + TaylorVisualizer
  *
- * All heavy panels are lazy-loaded via React.lazy + Suspense so that
- * the initial shell renders instantly.
+ * All Mafs-heavy panels are lazy-loaded (ssr:false) to avoid SSR issues
+ * with mafs/core.css and browser-only APIs.
  */
 
-import { useState, Suspense, lazy } from 'react'
+import { useState } from 'react'
+import dynamic from 'next/dynamic'
 
 // ---------------------------------------------------------------------------
-// Lazy panels
+// Dynamic (ssr:false) panels
 // ---------------------------------------------------------------------------
 
-const DerivativesPanel  = lazy(() => import('./DerivativesPanel').then(m => ({ default: m.DerivativesPanel })))
-const IntegralsPanel    = lazy(() => import('./IntegralsPanel').then(m => ({ default: m.IntegralsPanel })))
-const LimitsPanel       = lazy(() => import('./LimitsPanel').then(m => ({ default: m.LimitsPanel })))
-const TangentVisualizer = lazy(() => import('./TangentVisualizer').then(m => ({ default: m.TangentVisualizer })))
-const RiemannVisualizer = lazy(() => import('./RiemannVisualizer').then(m => ({ default: m.RiemannVisualizer })))
-const TaylorVisualizer  = lazy(() => import('./TaylorVisualizer').then(m => ({ default: m.TaylorVisualizer })))
+function PanelSkeleton() {
+  return (
+    <div className="animate-pulse flex flex-col gap-4">
+      <div className="h-6 w-48 bg-[--surface-secondary] rounded" />
+      <div className="h-4 w-72 bg-[--surface-secondary] rounded" />
+      <div className="h-[300px] bg-[--surface-secondary] rounded-xl" />
+    </div>
+  )
+}
+
+const DerivativesPanel = dynamic(
+  () => import('./DerivativesPanel').then(m => ({ default: m.DerivativesPanel })),
+  { ssr: false, loading: () => <PanelSkeleton /> }
+)
+
+const IntegralsPanel = dynamic(
+  () => import('./IntegralsPanel').then(m => ({ default: m.IntegralsPanel })),
+  { ssr: false, loading: () => <PanelSkeleton /> }
+)
+
+const LimitsPanel = dynamic(
+  () => import('./LimitsPanel').then(m => ({ default: m.LimitsPanel })),
+  { ssr: false, loading: () => <PanelSkeleton /> }
+)
+
+const TangentVisualizer = dynamic(
+  () => import('./TangentVisualizer').then(m => ({ default: m.TangentVisualizer })),
+  { ssr: false, loading: () => <PanelSkeleton /> }
+)
+
+const RiemannVisualizer = dynamic(
+  () => import('./RiemannVisualizer').then(m => ({ default: m.RiemannVisualizer })),
+  { ssr: false, loading: () => <PanelSkeleton /> }
+)
+
+const TaylorVisualizer = dynamic(
+  () => import('./TaylorVisualizer').then(m => ({ default: m.TaylorVisualizer })),
+  { ssr: false, loading: () => <PanelSkeleton /> }
+)
 
 // ---------------------------------------------------------------------------
 // Tab definitions
@@ -74,25 +108,9 @@ function VisualizadorPanel() {
       </div>
 
       {/* Panel */}
-      <Suspense fallback={<PanelSkeleton />}>
-        {vizTab === 'tangente' && <TangentVisualizer />}
-        {vizTab === 'riemann'  && <RiemannVisualizer />}
-        {vizTab === 'taylor'   && <TaylorVisualizer />}
-      </Suspense>
-    </div>
-  )
-}
-
-// ---------------------------------------------------------------------------
-// Loading skeleton
-// ---------------------------------------------------------------------------
-
-function PanelSkeleton() {
-  return (
-    <div className="animate-pulse flex flex-col gap-4">
-      <div className="h-6 w-48 bg-[--surface-secondary] rounded" />
-      <div className="h-4 w-72 bg-[--surface-secondary] rounded" />
-      <div className="h-[300px] bg-[--surface-secondary] rounded-xl" />
+      {vizTab === 'tangente' && <TangentVisualizer />}
+      {vizTab === 'riemann'  && <RiemannVisualizer />}
+      {vizTab === 'taylor'   && <TaylorVisualizer />}
     </div>
   )
 }
@@ -125,12 +143,10 @@ export function CalculusModuleTabs() {
       </div>
 
       {/* ── Active panel ──────────────────────────────────────── */}
-      <Suspense fallback={<PanelSkeleton />}>
-        {tab === 'derivadas'    && <DerivativesPanel />}
-        {tab === 'integrales'   && <IntegralsPanel />}
-        {tab === 'limites'      && <LimitsPanel />}
-        {tab === 'visualizador' && <VisualizadorPanel />}
-      </Suspense>
+      {tab === 'derivadas'    && <DerivativesPanel />}
+      {tab === 'integrales'   && <IntegralsPanel />}
+      {tab === 'limites'      && <LimitsPanel />}
+      {tab === 'visualizador' && <VisualizadorPanel />}
     </div>
   )
 }

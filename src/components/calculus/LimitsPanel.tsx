@@ -22,9 +22,11 @@ import type { LimitDirection } from '@/types/calculus'
 // ---------------------------------------------------------------------------
 
 const DIRECTION_LABELS: Record<LimitDirection, string> = {
-  both:  'Bilateral',
-  left:  'Lateral izq.',
-  right: 'Lateral der.',
+  both:         'Bilateral',
+  left:         'Lateral izq.',
+  right:        'Lateral der.',
+  infinity:     'x → ∞',
+  neg_infinity: 'x → -∞',
 }
 
 const PRESET_POINTS = ['0', '1', '-1', '2', '\\infty', '-\\infty']
@@ -122,7 +124,7 @@ export function LimitsPanel() {
           <div>
             <label className="block text-xs font-medium text-[--text-secondary] mb-1">Dirección</label>
             <div className="flex gap-1">
-              {(Object.keys(DIRECTION_LABELS) as LimitDirection[]).map((d) => (
+              {(['both', 'left', 'right'] as LimitDirection[]).map((d) => (
                 <button
                   key={d}
                   onClick={() => setDirection(d)}
