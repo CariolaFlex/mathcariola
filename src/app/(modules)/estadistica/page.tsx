@@ -1,24 +1,19 @@
 import type { Metadata } from 'next'
-import { PageWrapper, Section } from '@/components/ui/PageWrapper'
+import { PageWrapper } from '@/components/ui/PageWrapper'
+import { EstadisticaModuleTabs } from '@/components/estadistica/EstadisticaModuleTabs'
 
-export const metadata: Metadata = { title: 'Estadística' }
+export const metadata: Metadata = {
+  title: 'Estadística — Mathcariola',
+  description: 'Estadística descriptiva: media, mediana, varianza, cuartiles, histograma, box plot y regresión lineal.',
+}
 
 export default function EstadisticaPage() {
   return (
     <PageWrapper
       title="Estadística"
-      description="Probabilidad, distribuciones y estadística inferencial para ingeniería."
-      badge="Sprint 11 →"
+      description="Estadística descriptiva completa: medidas de tendencia central, dispersión, gráficos y regresión lineal."
     >
-      <Section title="En construcción">
-        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-[--border] bg-[--surface-raised] py-16 text-center">
-          <span className="mb-3 text-5xl">σ</span>
-          <p className="text-lg font-semibold text-[--text-primary]">Módulo Estadística</p>
-          <p className="mt-1 max-w-sm text-sm text-[--text-muted]">
-            Las distribuciones, pruebas de hipótesis y regresión se integrarán en el Sprint 11.
-          </p>
-        </div>
-      </Section>
+      <EstadisticaModuleTabs />
     </PageWrapper>
   )
 }
