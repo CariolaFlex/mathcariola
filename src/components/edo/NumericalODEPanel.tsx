@@ -125,6 +125,7 @@ export function NumericalODEPanel() {
             </div>
             <input type="range" min={2} max={50} step={1} value={steps}
               onChange={e => setSteps(parseInt(e.target.value,10))}
+              aria-label="Número de pasos de integración"
               className="w-full" style={{ accentColor: '#6366f1' }} />
           </div>
 

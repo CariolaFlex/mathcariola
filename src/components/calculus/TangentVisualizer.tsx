@@ -115,6 +115,7 @@ export function TangentVisualizer() {
               step={0.05}
               value={x0}
               onChange={(e) => setX0(parseFloat(e.target.value))}
+              aria-label="Punto de tangencia x₀"
               className="w-full"
               style={{ accentColor: '#f59e0b' }}
             />

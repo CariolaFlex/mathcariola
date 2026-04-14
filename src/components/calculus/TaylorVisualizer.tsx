@@ -127,6 +127,7 @@ export function TaylorVisualizer() {
               step={1}
               value={terms}
               onChange={(e) => setTerms(parseInt(e.target.value, 10))}
+              aria-label="Número de términos de la serie de Taylor"
               className="w-full"
               style={{ accentColor: '#f59e0b' }}
             />

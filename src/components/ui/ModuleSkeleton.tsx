@@ -1,3 +1,5 @@
+import React from 'react'
+
 /**
  * ModuleSkeleton — Standardized loading skeleton for all module panels.
  *
@@ -9,8 +11,8 @@
 // Base skeleton block helpers
 // ---------------------------------------------------------------------------
 
-function SkeletonBlock({ className }: { className: string }) {
-  return <div className={`animate-pulse rounded bg-[--surface-secondary] ${className}`} />
+function SkeletonBlock({ className, style }: { className: string; style?: React.CSSProperties }) {
+  return <div className={`animate-pulse rounded bg-[--surface-secondary] ${className}`} style={style} />
 }
 
 // ---------------------------------------------------------------------------

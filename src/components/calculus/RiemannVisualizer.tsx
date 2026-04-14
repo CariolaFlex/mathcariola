@@ -248,6 +248,7 @@ export function RiemannVisualizer() {
               step={1}
               value={n}
               onChange={(e) => setN(parseInt(e.target.value, 10))}
+              aria-label="Número de rectángulos"
               className="w-full"
               style={{ accentColor: color }}
             />
