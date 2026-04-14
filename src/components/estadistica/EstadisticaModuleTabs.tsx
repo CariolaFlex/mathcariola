@@ -9,15 +9,7 @@
 import { useState, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { STATISTICS_EXAMPLES } from '@/types/statistics'
-
-function PanelSkeleton() {
-  return (
-    <div className="animate-pulse flex flex-col gap-4">
-      <div className="h-6 w-48 bg-[--surface-secondary] rounded" />
-      <div className="h-[300px] bg-[--surface-secondary] rounded-xl" />
-    </div>
-  )
-}
+import { PanelSkeleton } from '@/components/ui/ModuleSkeleton'
 
 const DataInputPanel = dynamic(
   () => import('./DataInputPanel').then(m => ({ default: m.DataInputPanel })),

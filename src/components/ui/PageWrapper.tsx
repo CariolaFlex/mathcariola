@@ -28,7 +28,7 @@ export function PageWrapper({
   className,
 }: PageWrapperProps) {
   return (
-    <div className={clsx('flex flex-col gap-6 p-4 md:p-6 lg:p-8', className)}>
+    <div id="main-content" className={clsx('flex flex-col gap-6 p-4 md:p-6 lg:p-8', className)}>
       {/* Page header */}
       <div className="flex flex-col gap-1">
         {badge && (
