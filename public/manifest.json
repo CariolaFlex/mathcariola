@@ -1,0 +1,47 @@
+{
+  "name": "MathCariola — Matemáticas para Ingeniería",
+  "short_name": "MathCariola",
+  "description": "Plataforma interactiva de matemáticas para ingeniería: cálculo, álgebra lineal, EDO y estadística.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f172a",
+  "theme_color": "#6366f1",
+  "lang": "es",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Funciones",
+      "short_name": "f(x)",
+      "description": "Módulo de funciones y graficadora",
+      "url": "/funciones"
+    },
+    {
+      "name": "Cálculo",
+      "short_name": "Cálculo",
+      "description": "Derivadas, integrales y límites",
+      "url": "/calculo"
+    },
+    {
+      "name": "Álgebra Lineal",
+      "short_name": "Matrices",
+      "description": "Operaciones matriciales y sistemas",
+      "url": "/algebra-lineal"
+    }
+  ]
+}

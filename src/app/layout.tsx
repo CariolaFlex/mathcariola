@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { ThemeProvider } from '@/components/ui/ThemeProvider'
+import { PWARegister } from '@/components/ui/PWARegister'
 import './globals.css'
 
 const inter = Inter({
@@ -113,6 +114,7 @@ export default function RootLayout({
           Ir al contenido principal
         </a>
         <ThemeProvider>{children}</ThemeProvider>
+        <PWARegister />
       </body>
     </html>
   )
