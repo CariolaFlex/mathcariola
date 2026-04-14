@@ -26,14 +26,13 @@ import type { TaylorResult } from '@/types/calculus'
 function nthDerivative(fn: (x: number) => number, n: number, a: number, h = 1e-4): number {
   if (n === 0) return fn(a)
 
-  // Use the forward difference table approach for higher orders
-  // f^(n)(a) ≈ (1/h^n) Σ_k (-1)^(n-k) C(n,k) f(a + k*h)
+  // Forward difference table: f^(n)(a) ≈ (1/h^n) Σ_k (-1)^(n-k) C(n,k) f(a + k*h)
   let sum = 0
   for (let k = 0; k <= n; k++) {
-    const coeff = binom(n, k) * (k % 2 === 0 ? 1 : -1) * ((n - k) % 2 === 0 ? 1 : -1)
+    const sign = (n - k) % 2 === 0 ? 1 : -1
     const val = fn(a + k * h)
     if (!isFinite(val)) return NaN
-    sum += coeff * val
+    sum += sign * binom(n, k) * val
   }
   return sum / Math.pow(h, n)
 }
