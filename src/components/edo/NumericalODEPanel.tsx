@@ -106,11 +106,11 @@ export function NumericalODEPanel() {
 
           {/* Parameters */}
           <div className="grid grid-cols-3 gap-2 text-xs">
-            {[['x₀', x0, setX0], ['y₀', y0, setY0], ['xₑₙd', xEnd, setXEnd]].map(([lbl, val, setter]) => (
-              <div key={String(lbl)}>
+            {([['x₀', x0, setX0], ['y₀', y0, setY0], ['xₑₙd', xEnd, setXEnd]] as [string, number, (n: number) => void][]).map(([lbl, val, setter]) => (
+              <div key={lbl}>
                 <label className="block text-[--text-secondary] mb-0.5">{lbl}</label>
-                <input type="number" step="0.5" value={Number(val)}
-                  onChange={e => (setter as (n: number) => void)(parseFloat(e.target.value)||0)}
+                <input type="number" step="0.5" value={val}
+                  onChange={e => setter(parseFloat(e.target.value)||0)}
                   className="w-full rounded border border-[--border] bg-[--surface-secondary] px-1.5 py-1 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500" />
               </div>
             ))}
@@ -152,7 +152,7 @@ export function NumericalODEPanel() {
           <div className="flex flex-col gap-1 text-xs">
             <div className="flex items-center gap-2"><span className="w-8 h-0.5 bg-orange-400 rounded inline-block"/><span className="text-[--text-secondary]">Euler</span></div>
             <div className="flex items-center gap-2"><span className="w-8 h-0.5 bg-emerald-400 rounded inline-block"/><span className="text-[--text-secondary]">Runge-Kutta 4°</span></div>
-            {exactFn && <div className="flex items-center gap-2"><span className="w-8 h-0.5 bg-violet-400 rounded inline-block opacity-70"/><span className="text-[--text-secondary]">Solución exacta</span></div>}
+            {exactFn !== null && <div className="flex items-center gap-2"><span className="w-8 h-0.5 bg-violet-400 rounded inline-block opacity-70"/><span className="text-[--text-secondary]">Solución exacta</span></div>}
           </div>
         </div>
 
