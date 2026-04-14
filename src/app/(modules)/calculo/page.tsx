@@ -3,8 +3,13 @@ import { PageWrapper } from '@/components/ui/PageWrapper'
 import { CalculusModuleTabs } from '@/components/calculus/CalculusModuleTabs'
 
 export const metadata: Metadata = {
-  title: 'Cálculo — Mathcariola',
+  title: 'Cálculo',
   description: 'Derivadas, integrales y límites con solución paso a paso. Visualizador de tangente, sumas de Riemann y series de Taylor.',
+  openGraph: {
+    title: 'Cálculo — MathCariola',
+    description: 'Calcula derivadas, integrales y límites con pasos pedagógicos. Visualizador interactivo de tangentes y sumas de Riemann.',
+  },
+  twitter: { card: 'summary_large_image' },
 }
 
 export default function CalculoPage() {

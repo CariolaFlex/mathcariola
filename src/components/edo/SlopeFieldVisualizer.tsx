@@ -152,6 +152,7 @@ export function SlopeFieldVisualizer() {
               type="range" min={6} max={20} step={1}
               value={density}
               onChange={(e) => setDensity(parseInt(e.target.value, 10))}
+              aria-label="Densidad del campo de pendientes"
               className="w-full"
               style={{ accentColor: '#6366f1' }}
             />

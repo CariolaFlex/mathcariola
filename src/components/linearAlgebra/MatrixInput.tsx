@@ -144,6 +144,7 @@ export function DimensionPicker({ rows, cols, maxDim = 5, onChangeRows, onChange
       <select
         value={rows}
         onChange={(e) => onChangeRows(parseInt(e.target.value, 10))}
+        aria-label="Número de filas"
         className="rounded border border-[--border] bg-[--surface-secondary] px-1.5 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
       >
         {Array.from({ length: maxDim }, (_, i) => i + 1).map((n) => (
@@ -154,6 +155,7 @@ export function DimensionPicker({ rows, cols, maxDim = 5, onChangeRows, onChange
       <select
         value={cols}
         onChange={(e) => onChangeCols(parseInt(e.target.value, 10))}
+        aria-label="Número de columnas"
         className="rounded border border-[--border] bg-[--surface-secondary] px-1.5 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
       >
         {Array.from({ length: maxDim }, (_, i) => i + 1).map((n) => (

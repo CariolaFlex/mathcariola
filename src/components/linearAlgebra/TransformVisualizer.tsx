@@ -135,6 +135,7 @@ export function TransformVisualizer() {
               type="range" min={0} max={1} step={0.01}
               value={t}
               onChange={(e) => setT(parseFloat(e.target.value))}
+              aria-label="Progreso de la transformación lineal"
               className="w-full"
               style={{ accentColor: '#6366f1' }}
             />

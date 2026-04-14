@@ -121,8 +121,7 @@ function detectIndeterminate(
 
 function applyLhopital(
   exprJson: MathJson,
-  ce: ReturnType<typeof getComputeEngine>,
-  aPoint: number
+  ce: ReturnType<typeof getComputeEngine>
 ): { newLatex: string; success: boolean } {
   const h = head(exprJson)
   if (h !== 'Divide') return { newLatex: '', success: false }
@@ -253,7 +252,7 @@ export function computeLimit(
     }
 
     // L'Hôpital's rule
-    const { newLatex, success: lhSuccess } = applyLhopital(parsed.json as MathJson, ce, aPoint)
+    const { newLatex, success: lhSuccess } = applyLhopital(parsed.json as MathJson, ce)
     if (lhSuccess) {
       steps.push(makeStep(
         stepNum++, 'lhopital',

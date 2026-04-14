@@ -7,16 +7,7 @@
 
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
-
-function PanelSkeleton() {
-  return (
-    <div className="animate-pulse flex flex-col gap-4">
-      <div className="h-6 w-48 bg-[--surface-secondary] rounded" />
-      <div className="h-4 w-72 bg-[--surface-secondary] rounded" />
-      <div className="h-[300px] bg-[--surface-secondary] rounded-xl" />
-    </div>
-  )
-}
+import { PanelSkeleton } from '@/components/ui/ModuleSkeleton'
 
 const ODEPanel = dynamic(
   () => import('./ODEPanel').then(m => ({ default: m.ODEPanel })),
