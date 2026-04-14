@@ -4,9 +4,14 @@ import { FuncionesModuleTabs } from '@/components/graph/FuncionesModuleTabs'
 import { Card } from '@/components/ui/Card'
 
 export const metadata: Metadata = {
-  title: 'Funciones — MathCariola',
+  title: 'Funciones',
   description:
-    'Módulo completo de funciones: graficadora 2D/3D, transformaciones, inversa, composición, biblioteca de ejemplos y solucionador paso a paso.',
+    'Módulo completo de funciones: graficadora 2D/3D, transformaciones, inversa, composición, biblioteca de 20 ejemplos y solucionador paso a paso.',
+  openGraph: {
+    title: 'Funciones — MathCariola',
+    description: 'Graficadora interactiva de funciones reales con motor CAS simbólico. Transformaciones, composición e inversas paso a paso.',
+  },
+  twitter: { card: 'summary_large_image' },
 }
 
 export default function FuncionesPage() {
