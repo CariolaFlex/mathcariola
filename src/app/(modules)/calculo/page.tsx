@@ -1,24 +1,35 @@
 import type { Metadata } from 'next'
-import { PageWrapper, Section } from '@/components/ui/PageWrapper'
+import dynamic from 'next/dynamic'
+import { PageWrapper } from '@/components/ui/PageWrapper'
 
-export const metadata: Metadata = { title: 'Cálculo' }
+export const metadata: Metadata = {
+  title: 'Cálculo — Mathcariola',
+  description: 'Derivadas, integrales y límites con solución paso a paso. Visualizador de tangente, sumas de Riemann y series de Taylor.',
+}
+
+// CalculusModuleTabs uses Mafs (client-only) via lazy() internally;
+// wrapping the shell itself in dynamic(ssr:false) ensures no SSR mismatch
+// from mafs/core.css or the Suspense-lazy chain.
+const CalculusModuleTabs = dynamic(
+  () => import('@/components/calculus/CalculusModuleTabs').then(m => ({ default: m.CalculusModuleTabs })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="animate-pulse flex flex-col gap-4 mt-6">
+        <div className="h-10 w-80 bg-[--surface-secondary] rounded-xl" />
+        <div className="h-[480px] bg-[--surface-secondary] rounded-2xl" />
+      </div>
+    ),
+  }
+)
 
 export default function CalculoPage() {
   return (
     <PageWrapper
       title="Cálculo"
-      description="Límites, derivadas e integrales con solución paso a paso."
-      badge="Sprint 9 →"
+      description="Derivadas, integrales y límites con pasos pedagógicos detallados. Visualizador interactivo de tangentes, sumas de Riemann y series de Taylor."
     >
-      <Section title="En construcción">
-        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-[--border] bg-[--surface-raised] py-16 text-center">
-          <span className="mb-3 text-5xl">∫</span>
-          <p className="text-lg font-semibold text-[--text-primary]">Módulo Cálculo</p>
-          <p className="mt-1 max-w-sm text-sm text-[--text-muted]">
-            El motor CAS Cortex CE y el solucionador paso a paso se integrarán en el Sprint 3.
-          </p>
-        </div>
-      </Section>
+      <CalculusModuleTabs />
     </PageWrapper>
   )
 }
