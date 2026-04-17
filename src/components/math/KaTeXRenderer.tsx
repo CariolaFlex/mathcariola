@@ -47,6 +47,37 @@ const BASE_OPTIONS: KatexOptions = {
   },
 }
 
+// ─── Sanitización ────────────────────────────────────────────────────────────
+/**
+ * Elimina marcadores internos de Cortex-JS / MathLive que no son LaTeX estándar
+ * y que producen salida confusa o errores en KaTeX.
+ *
+ * Patrones eliminados:
+ *   \error{...}              — anotación de error de CE al parsear
+ *   \colorbox{#fbbbb6}{...}  — resaltado de error de MathLive (se conserva el contenido)
+ *   \placeholder[{...}]      — marcador de placeholder de MathLive
+ *   \bigm                    — delimitador que CE incluye en expresiones inválidas
+ */
+function sanitizeLatex(expr: string): string {
+  let s = expr
+  // Múltiples pasadas para manejar anidamiento
+  for (let pass = 0; pass < 5; pass++) {
+    const prev = s
+    // \error{contenido} → eliminar (el contenido suele ser inválido también)
+    s = s.replace(/\\error\{[^{}]*\}/g, '')
+    // \colorbox{color}{contenido} → conservar solo el contenido
+    s = s.replace(/\\colorbox\{[^{}]*\}\{([^{}]*)\}/g, '$1')
+    // \placeholder con argumento opcional
+    s = s.replace(/\\placeholder(?:\{[^{}]*\})?/g, '')
+    if (s === prev) break
+  }
+  // Limpiar \bigm suelto (sin argumento de delimitador)
+  s = s.replace(/\\bigm\s*(?=[^{]|$)/g, '')
+  // Limpiar espacios múltiples resultantes
+  s = s.replace(/\s{2,}/g, ' ').trim()
+  return s
+}
+
 // ─── Función de render segura ────────────────────────────────────────────────
 function renderSafe(
   expression: string,
@@ -58,8 +89,14 @@ function renderSafe(
     return { html: '', isError: false }
   }
 
+  // Sanitizar marcadores de error CE/MathLive antes de pasar a KaTeX
+  const sanitized = sanitizeLatex(expression)
+  if (!sanitized) {
+    return { html: '', isError: false }
+  }
+
   try {
-    const html = katex.renderToString(expression, {
+    const html = katex.renderToString(sanitized, {
       ...BASE_OPTIONS,
       displayMode,
       throwOnError: errorPolicy === 'throw',
@@ -69,7 +106,7 @@ function renderSafe(
     if (errorPolicy === 'throw') throw err
 
     // Fallback: muestra LaTeX en monospace con indicador de error
-    const escaped = expression
+    const escaped = sanitized
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')

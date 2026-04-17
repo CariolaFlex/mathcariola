@@ -29,7 +29,7 @@ export const useSolverStore = create<SolverState>()(
       loading: false,
 
       setSolution: (result: SolutionResult) => {
-        set({ currentResult: result, revealedCount: 1 })
+        set({ currentResult: result, revealedCount: 0 })
       },
 
       revealNextStep: () => {

@@ -129,7 +129,7 @@ export function describeTransform(params: TransformParams): string[] {
   if (h !== 0) {
     steps.push(
       h > 0
-        ? `Traslación ${h > 0 ? 'izquierda' : 'derecha'} ${Math.abs(h)} unidades`
+        ? `Traslación izquierda ${h} unidades`
         : `Traslación derecha ${Math.abs(h)} unidades`
     )
   }
@@ -174,8 +174,9 @@ export function transformedLatex(originalLatex: string, params: TransformParams)
   else if (b !== 1) arg = `${b}x`
   else if (h !== 0) arg = `x ${h > 0 ? '+' : ''}${h}`
 
-  // Build f(arg)
-  let expr = `(${originalLatex.replace(/x/g, `(${arg})`) })`
+  // Build f(arg) — replace standalone x (not inside LaTeX commands like \exp, \max)
+  // The lookbehind (?<![\\a-zA-Z]) ensures we skip \command names containing x
+  let expr = `(${originalLatex.replace(/(?<![\\a-zA-Z])x(?![a-zA-Z])/g, `(${arg})`)})`
 
   // Apply a
   if (a !== 1) expr = `${a} \\cdot ${expr}`

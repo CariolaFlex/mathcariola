@@ -3,10 +3,12 @@
 /**
  * StepCard — Shared step-by-step solution display component.
  *
- * Renders a SolutionStep[] list with rule icons and descriptions.
- * Used by DerivativesPanel, IntegralsPanel, LimitsPanel.
+ * Renders a SolutionStep[] list with rule icons, KaTeX-rendered expressions,
+ * and descriptions that support inline $...$ math.
+ * Used by DerivativesPanel, IntegralsPanel, LimitsPanel, AlgebraLineal, EDO.
  */
 
+import { KaTeXRenderer } from '@/components/math/KaTeXRenderer'
 import type { SolutionStep } from '@/types/calculus'
 
 // ---------------------------------------------------------------------------
@@ -47,6 +49,31 @@ function getMeta(rule: string) {
 }
 
 // ---------------------------------------------------------------------------
+// Inline math parser — renders $...$ segments with KaTeX
+// ---------------------------------------------------------------------------
+
+function renderDescription(text: string) {
+  // Split on $...$ patterns, preserving delimiters
+  const parts = text.split(/(\$[^$]+\$)/)
+  return (
+    <>
+      {parts.map((part, i) =>
+        part.startsWith('$') && part.endsWith('$') && part.length > 2 ? (
+          <KaTeXRenderer
+            key={i}
+            expression={part.slice(1, -1)}
+            displayMode={false}
+            className="mx-0.5"
+          />
+        ) : (
+          <span key={i}>{part}</span>
+        )
+      )}
+    </>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // StepCard
 // ---------------------------------------------------------------------------
 
@@ -81,12 +108,20 @@ export function StepCard({ steps, title = 'Solución paso a paso' }: StepCardPro
               </div>
 
               {/* Content */}
-              <div className="flex flex-col gap-1 min-w-0">
-                <p className="text-xs text-[--text-secondary] leading-relaxed">{step.description}</p>
+              <div className="flex flex-col gap-1.5 min-w-0 w-full">
+                {/* Description — parses $...$ as inline KaTeX */}
+                <p className="text-xs text-[--text-secondary] leading-relaxed">
+                  {renderDescription(step.description)}
+                </p>
+                {/* LaTeX expression — rendered with KaTeX (not plain code) */}
                 {step.latex && step.latex !== step.description && (
-                  <code className="font-mono text-xs text-[--text-primary] bg-black/20 rounded px-2 py-0.5 break-all">
-                    {step.latex}
-                  </code>
+                  <div className="overflow-x-auto rounded bg-black/20 px-3 py-1.5">
+                    <KaTeXRenderer
+                      expression={step.latex}
+                      displayMode={false}
+                      className="text-sm text-[--text-primary]"
+                    />
+                  </div>
                 )}
               </div>
             </li>

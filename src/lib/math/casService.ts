@@ -2,6 +2,27 @@ import type { CASResult, VariableMap } from '@/types/math'
 import { getComputeEngine } from './computeEngine'
 
 // ---------------------------------------------------------------------------
+// Input sanitization
+// ---------------------------------------------------------------------------
+
+/**
+ * Elimina marcadores internos de MathLive/CE del LaTeX antes de procesarlo.
+ * Cuando el usuario está escribiendo una expresión incompleta, MathLive emite
+ * marcas como \error{} y \colorbox{#fbbbb6}{} que CE no puede procesar.
+ */
+function sanitizeInput(latex: string): string {
+  let s = latex
+  for (let pass = 0; pass < 5; pass++) {
+    const prev = s
+    s = s.replace(/\\error\{[^{}]*\}/g, '')
+    s = s.replace(/\\colorbox\{[^{}]*\}\{([^{}]*)\}/g, '$1')
+    s = s.replace(/\\placeholder(?:\{[^{}]*\})?/g, '')
+    if (s === prev) break
+  }
+  return s.replace(/\\bigm\s*(?=[^{]|$)/g, '').trim()
+}
+
+// ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
@@ -26,12 +47,14 @@ function errResult(fallbackLatex: string, err: unknown): CASResult {
  * Example: "2x + 3x" → "5x"
  */
 export function simplify(latex: string): CASResult {
+  const clean = sanitizeInput(latex)
+  if (!clean) return errResult(latex, 'Expresión vacía')
   try {
     const ce = getComputeEngine()
-    const result = ce.parse(latex).simplify()
+    const result = ce.parse(clean).simplify()
     return toResult(result)
   } catch (err) {
-    return errResult(latex, err)
+    return errResult(clean, err)
   }
 }
 
@@ -40,12 +63,14 @@ export function simplify(latex: string): CASResult {
  * Example: "\\sin(\\frac{\\pi}{2})" → "1"
  */
 export function evaluate(latex: string): CASResult {
+  const clean = sanitizeInput(latex)
+  if (!clean) return errResult(latex, 'Expresión vacía')
   try {
     const ce = getComputeEngine()
-    const result = ce.parse(latex).evaluate()
+    const result = ce.parse(clean).evaluate()
     return toResult(result)
   } catch (err) {
-    return errResult(latex, err)
+    return errResult(clean, err)
   }
 }
 
@@ -54,13 +79,15 @@ export function evaluate(latex: string): CASResult {
  * Example: "(x+1)^2" → "x^2 + 2x + 1"
  */
 export function expand(latex: string): CASResult {
+  const clean = sanitizeInput(latex)
+  if (!clean) return errResult(latex, 'Expresión vacía')
   try {
     const ce = getComputeEngine()
-    const parsed = ce.parse(latex)
+    const parsed = ce.parse(clean)
     const result = ce.box(['Expand', parsed]).evaluate()
     return toResult(result)
   } catch (err) {
-    return errResult(latex, err)
+    return errResult(clean, err)
   }
 }
 
@@ -69,13 +96,15 @@ export function expand(latex: string): CASResult {
  * Example: "x^2 + 2x + 1" → "(x+1)^2"
  */
 export function factor(latex: string): CASResult {
+  const clean = sanitizeInput(latex)
+  if (!clean) return errResult(latex, 'Expresión vacía')
   try {
     const ce = getComputeEngine()
-    const parsed = ce.parse(latex)
+    const parsed = ce.parse(clean)
     const result = ce.box(['Factor', parsed]).evaluate()
     return toResult(result)
   } catch (err) {
-    return errResult(latex, err)
+    return errResult(clean, err)
   }
 }
 
@@ -87,9 +116,11 @@ export function evaluateNumerically(
   latex: string,
   variables: VariableMap = {}
 ): CASResult {
+  const clean = sanitizeInput(latex)
+  if (!clean) return errResult(latex, 'Expresión vacía')
   try {
     const ce = getComputeEngine()
-    const parsed = ce.parse(latex)
+    const parsed = ce.parse(clean)
 
     const keys = Object.keys(variables)
     if (keys.length > 0) {
@@ -104,7 +135,7 @@ export function evaluateNumerically(
     const result = parsed.evaluate()
     return toResult(result)
   } catch (err) {
-    return errResult(latex, err)
+    return errResult(clean, err)
   }
 }
 
@@ -113,9 +144,11 @@ export function evaluateNumerically(
  * Example: "2x + 4 = 0" solve for "x" → "x = -2"
  */
 export function solveFor(latex: string, variable: string): CASResult {
+  const clean = sanitizeInput(latex)
+  if (!clean) return errResult(latex, 'Expresión vacía')
   try {
     const ce = getComputeEngine()
-    const expr = ce.parse(latex)
+    const expr = ce.parse(clean)
     const solutions = expr.solve(variable)
 
     // solve() returns null | ReadonlyArray<Expression> | Record | Array<Record>

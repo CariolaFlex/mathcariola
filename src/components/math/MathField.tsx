@@ -60,6 +60,23 @@ export function MathField({
     })
   }, [])
 
+  // ── 1b. Configurar placeholder vía JS (no como atributo HTML — MathLive
+  //        lo interpretaría como fórmula LaTeX y mostraría símbolos raros) ──
+  const placeholderRef = useRef(placeholder)
+  placeholderRef.current = placeholder
+  useEffect(() => {
+    const el = fieldRef.current
+    if (!el) return
+    // Usar texto plano como placeholder (no LaTeX)
+    // MathLive lo muestra en gris cuando el campo está vacío
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(el as any).setOptions?.({ placeholder: placeholderRef.current ?? '' })
+    } catch {
+      // setOptions no disponible en esta versión — ignorar silenciosamente
+    }
+  }, [placeholder])
+
   // ── 2. Suscribir eventos del Shadow DOM vía addEventListener ──────────────
   useEffect(() => {
     const el = fieldRef.current
@@ -119,7 +136,6 @@ export function MathField({
       <math-field
         ref={fieldRef as React.RefObject<MathfieldHTMLElement>}
         read-only={readOnly || undefined}
-        placeholder={placeholder}
         suppressHydrationWarning
       />
     </div>
