@@ -4,5 +4,6 @@
 > Las rutas de este repo ya se actualizaron; si aparece una ruta vieja, es un resto: corregirla.
 > Plan y bitácora: `C:\Cariolaspace\CariolaConfig\Cariolaspace\PLAN-REORGANIZACION-C.md`.
 > **Catálogo de Vectium:** demo que vive solo en GitHub + Vercel, sin bases de datos ni nube.
+> **Estado, conexiones y pendientes: `ESTADO.md`** (al día al 2026-11-12, antes de la mudanza al Mac).
 
 @AGENTS.md
